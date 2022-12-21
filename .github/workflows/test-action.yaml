@@ -26,4 +26,6 @@ jobs:
           schema: 'apollo-server/products.graphql'
           debug: true
       - name: Debug
-        run: cat supergraph-config.yaml
+        run: |
+          cat supergraph-config.yaml
+          ls node_modules/binary-install/node_modules/.bin
