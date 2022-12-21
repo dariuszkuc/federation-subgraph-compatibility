@@ -23,7 +23,16 @@ async function main(): Promise<void> {
     port: getInput('port') ?? '4001',
     format: 'markdown',
   };
-  await compatibilityTest(runtimeConfig);
+  try {
+    await compatibilityTest(runtimeConfig);
+  } catch (err) {
+
+  } finally {
+    const config = readFileSync('supergraph-config.yaml', 'utf-8');
+    console.log("CONFIG");
+    console.log(config);
+  }
+  console.log("finished compatibility test");
 
   // upload artifact
   const artifactClient = create();
