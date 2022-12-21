@@ -22,6 +22,6 @@ jobs:
       - name: Run action
         uses: ./
         with:
-          compose: apollo-server/docker-compose.yaml
-          schema: apollo-server/products.graphql
+          compose: 'apollo-server/docker-compose.yaml'
+          schema: 'apollo-server/products.graphql'
           debug: true
