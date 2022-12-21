@@ -1,0 +1,27 @@
+name: Test GH action
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  compatibility-action:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Run action
+        uses: ./
+        with:
+          compose: apollo-server/docker-compose.yaml
+          schema: apollo-server/products.graphql
+          debug: true
