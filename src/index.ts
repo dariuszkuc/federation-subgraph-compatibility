@@ -7,6 +7,7 @@ import {
   DockerConfig,
 } from '@apollo/federation-subgraph-compatibility-tests';
 import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 async function main(): Promise<void> {
   const debugMode: boolean = getBooleanInput('debug');
@@ -38,7 +39,7 @@ async function main(): Promise<void> {
   const artifactClient = create();
   const artifactName = 'compatibility-results';
   const files = ['results.md'];
-  const rootDirectory = __dirname;
+  const rootDirectory = resolve(__dirname, '..');
   const options = {
     continueOnError: false,
   };

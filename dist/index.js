@@ -9,6 +9,7 @@ const core_1 = require("@actions/core");
 const github_1 = require("@actions/github");
 const federation_subgraph_compatibility_tests_1 = require("@apollo/federation-subgraph-compatibility-tests");
 const fs_1 = require("fs");
+const path_1 = require("path");
 async function main() {
     const debugMode = (0, core_1.getBooleanInput)('debug');
     if (debugMode) {
@@ -37,7 +38,7 @@ async function main() {
     const artifactClient = (0, artifact_1.create)();
     const artifactName = 'compatibility-results';
     const files = ['results.md'];
-    const rootDirectory = __dirname;
+    const rootDirectory = (0, path_1.resolve)(__dirname, '..');
     const options = {
         continueOnError: false,
     };
