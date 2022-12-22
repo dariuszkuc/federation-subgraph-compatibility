@@ -23,7 +23,17 @@ async function main() {
         port: (0, core_1.getInput)('port') ?? '4001',
         format: 'markdown',
     };
-    await (0, federation_subgraph_compatibility_tests_1.compatibilityTest)(runtimeConfig);
+    try {
+        await (0, federation_subgraph_compatibility_tests_1.compatibilityTest)(runtimeConfig);
+    }
+    catch (err) {
+    }
+    finally {
+        const config = (0, fs_1.readFileSync)('supergraph-config.yaml', 'utf-8');
+        console.log("CONFIG");
+        console.log(config);
+    }
+    console.log("finished compatibility test");
     const artifactClient = (0, artifact_1.create)();
     const artifactName = 'compatibility-results';
     const files = ['results.md'];
