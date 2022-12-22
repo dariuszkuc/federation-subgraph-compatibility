@@ -24,18 +24,10 @@ async function main(): Promise<void> {
     port: getInput('port') ?? '4001',
     format: 'markdown',
   };
-  try {
-    await compatibilityTest(runtimeConfig);
-  } catch (err) {
-
-  } finally {
-    const config = readFileSync('supergraph-config.yaml', 'utf-8');
-    console.log("CONFIG");
-    console.log(config);
-  }
-  console.log("finished compatibility test");
+  await compatibilityTest(runtimeConfig);
 
   // upload artifact
+  console.log("uploading compatibility results workflow artifact");
   const artifactClient = create();
   const artifactName = 'compatibility-results';
   const files = ['results.md'];
@@ -54,16 +46,47 @@ async function main(): Promise<void> {
   const { pull_request } = context.payload;
   if (pull_request) {
     const token: string = getInput('token');
+    console.log("attempting to comment on the PR");
     if (token) {
       const octokit = getOctokit(token);
-      const bodyContents: string = readFileSync('results.md', 'utf-8');
-      await octokit.rest.issues.createComment({
+      // find latest comment
+      const comments = await octokit.rest.issues.listComments({
         ...context.repo,
-        issue_number: pull_request.number,
-        body: bodyContents,
+        issue_number: pull_request.number
       });
+      let lastCommentId: number | null = null
+      if (comments.status == 200 && comments.data) {
+        const actionComment = comments.data.filter(element => element.body?.startsWith("## Apollo Federation Subgraph Compatibility Results"));
+        if (actionComment.length > 0) {
+          lastCommentId = actionComment[0].id;
+        }
+      }
+
+      const compatibilityResults: string = readFileSync('results.md', 'utf-8');
+      const commentBody = `## Apollo Federation Subgraph Compatibility Results\n
+${compatibilityResults}\n
+Learn more:
+* [Apollo Federation Subgraph Specification](https://www.apollographql.com/docs/federation/subgraph-spec/)
+* [Compatibility Tests](https://github.com/apollographql/apollo-federation-subgraph-compatibility/blob/main/COMPATIBILITY.md)`
+
+      if (lastCommentId) {
+        console.log("comment found!")
+        await octokit.rest.issues.updateComment({
+          ...context.repo,
+          comment_id: lastCommentId,
+          body: commentBody,
+        });
+      } else {
+        console.log("new comment");
+        await octokit.rest.issues.createComment({
+          ...context.repo,
+          issue_number: pull_request.number,
+          body: commentBody,
+        });
+      }
+      console.log("comment posted");
     } else {
-      console.warn('Github Token not provided');
+      console.warn('unable to post comment - Github Token was not provided');
     }
   }
 }
