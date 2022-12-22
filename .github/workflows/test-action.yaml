@@ -29,6 +29,7 @@ jobs:
           compose: 'apollo-server/docker-compose.yaml'
           schema: 'apollo-server/products.graphql'
           debug: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Debug
         run: |
           cat supergraph-config.yaml
