@@ -13,7 +13,7 @@ async function main(): Promise<void> {
   const workingDirectory = getInput('workingDirectory');
   if (workingDirectory) {
     console.log(`changing current working directory to ${workingDirectory}`);
-    const newWorkingDirectory = resolve(__dirname, workingDirectory);
+    const newWorkingDirectory = resolve(process.cwd(), workingDirectory);
     process.chdir(newWorkingDirectory);
   }
 
