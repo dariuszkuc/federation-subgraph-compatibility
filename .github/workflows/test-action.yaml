@@ -26,10 +26,11 @@ jobs:
       - name: Run action
         uses: ./
         with:
-          compose: 'apollo-server/docker-compose.yaml'
-          schema: 'apollo-server/products.graphql'
+          compose: 'docker-compose.yaml'
+          schema: 'products.graphql'
           debug: true
           token: ${{ secrets.GITHUB_TOKEN }}
+          workingDirectory: 'apollo-server'
       - name: Debug
         run: |
           cat supergraph-config.yaml
