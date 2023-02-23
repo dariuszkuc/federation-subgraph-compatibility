@@ -1,0 +1,6 @@
+services:
+  products:
+    # must be relative to the working directory
+    build: .
+    ports:
+      - 4001:4001
